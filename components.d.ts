@@ -20,6 +20,7 @@ declare module 'vue' {
     ElFooter: typeof import('element-plus/es')['ElFooter']
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
@@ -27,9 +28,12 @@ declare module 'vue' {
     ElSplitter: typeof import('element-plus/es')['ElSplitter']
     ElSplitterPanel: typeof import('element-plus/es')['ElSplitterPanel']
     ElStatistic: typeof import('element-plus/es')['ElStatistic']
+    ElTree: typeof import('element-plus/es')['ElTree']
+    ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     FunctionPanel: typeof import('./src/components/FunctionPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IconComponent: typeof import('./src/components/base/IconComponent.vue')['default']
     IconPonent: typeof import('./src/components/IconPonent.vue')['default']
+    InterfacePanel: typeof import('./src/components/InterfacePanel.vue')['default']
   }
 }

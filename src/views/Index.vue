@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import vueLogo from '../assets/vue.svg'
     import FunctionPanel from '../components/FunctionPanel.vue';
-    const icons = [
-        {
-            src: vueLogo,
-            title: 'Vue',
-            selected: true
-        },
-        {
-            src: vueLogo,
-            title: 'Vue'
-        }
-    ];
+    import InterfacePanel from '../components/InterfacePanel.vue';
 </script>
 
 <template>
     <div class="splitter-wrapper">
         <el-splitter>
-            <el-splitter-panel size="60px" min="60px" max="60px">
-                <function-panel :icons="icons"></function-panel>
+            <!-- 功能栏 -->
+            <el-splitter-panel size="60px" min="60px" max="60px" style="width: 60px !important;">
+                <function-panel></function-panel>
             </el-splitter-panel>
-            <el-splitter-panel size="200px">
-                <div class="item-panel">1</div>
+            <!-- 接口树 -->
+            <el-splitter-panel size="200px" style="height: 100%;">
+                <interface-panel></interface-panel>
             </el-splitter-panel>
             <el-splitter-panel>
                 <div class="item-panel">2</div>
