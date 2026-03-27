@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "setup": "ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ npm install",
-    "dev": "vite",
-    "build":"vue-tsc && vite build && electron-builder",
-    "first-build": "export ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ && export ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/ && vue-tsc && vite build && electron-builder",
+    "dev:web": "vite",
+    "dev:electron": "APP_TARGET=electron vite",
+    "build:web": "vue-tsc && vite build",
+    "build:electron": "vue-tsc && APP_TARGET=electron vite build && electron-builder",
+    "first-build": "export ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ && export ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/ && vue-tsc && APP_TARGET=electron vite build && electron-builder",
     "preview": "vite preview",
-    "rmall":"rm -rf dist dist-electron release"
+    "rm:all": "rm -rf dist dist-electron release"
   },
   "dependencies": {
     "vue": "^3.4.21"
