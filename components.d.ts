@@ -28,6 +28,8 @@ declare module 'vue' {
     ElSplitter: typeof import('element-plus/es')['ElSplitter']
     ElSplitterPanel: typeof import('element-plus/es')['ElSplitterPanel']
     ElStatistic: typeof import('element-plus/es')['ElStatistic']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
+    ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     FunctionPanel: typeof import('./src/components/FunctionPanel.vue')['default']
@@ -35,6 +37,7 @@ declare module 'vue' {
     IconComponent: typeof import('./src/components/base/IconComponent.vue')['default']
     IconPonent: typeof import('./src/components/IconPonent.vue')['default']
     InterfacePanel: typeof import('./src/components/InterfacePanel.vue')['default']
+    RequestPanel: typeof import('./src/components/RequestPanel.vue')['default']
     ZSplitter: typeof import('./src/components/base/ZSplitter.vue')['default']
     ZSplitterPanel: typeof import('./src/components/base/ZSplitterPanel.vue')['default']
   }
