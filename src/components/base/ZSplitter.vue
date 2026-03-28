@@ -104,6 +104,12 @@
         return isHorizontal.value ? container.clientWidth : container.clientHeight;
     };
 
+    const getPanelsLength = (containerLengthValue: number, panelCount: number): number => {
+        const gutterCount = Math.max(panelCount - 1, 0);
+        const gutterTotal = gutterCount * props.gutterSize;
+        return Math.max(containerLengthValue - gutterTotal, 0);
+    };
+
     const parseSize = (value: SizeValue, base: number): number | undefined => {
         if (value === undefined || value === null || value === "") {
             return undefined;
@@ -225,8 +231,16 @@
             return;
         }
 
+        const panelsLength = getPanelsLength(totalLength, count);
+        if (!panelsLength) {
+            panelSizes.value = new Array<number>(count).fill(0);
+            containerLength.value = 0;
+            emit("change", [...panelSizes.value]);
+            return;
+        }
+
         const limits = panelNodes.value.map((_, index) =>
-            panelLimit(index, totalLength),
+            panelLimit(index, panelsLength),
         );
 
         if (
@@ -234,11 +248,11 @@
             panelSizes.value.length === count &&
             containerLength.value > 0
         ) {
-            if (containerLength.value !== totalLength) {
-                const ratio = totalLength / containerLength.value;
+            if (containerLength.value !== panelsLength) {
+                const ratio = panelsLength / containerLength.value;
                 const scaled = panelSizes.value.map((value) => value * ratio);
-                panelSizes.value = distributeToFit(scaled, limits, totalLength);
-                containerLength.value = totalLength;
+                panelSizes.value = distributeToFit(scaled, limits, panelsLength);
+                containerLength.value = panelsLength;
                 emit("change", [...panelSizes.value]);
             }
             return;
@@ -249,7 +263,7 @@
         let used = 0;
 
         for (let i = 0; i < count; i += 1) {
-            const fixed = parseSize(limits[i].size, totalLength);
+            const fixed = parseSize(limits[i].size, panelsLength);
             if (fixed === undefined) {
                 unresolved.push(i);
                 continue;
@@ -260,22 +274,22 @@
             used += bounded;
         }
 
-        const remain = Math.max(totalLength - used, 0);
+        const remain = Math.max(panelsLength - used, 0);
         const avg = unresolved.length ? remain / unresolved.length : 0;
 
         for (const index of unresolved) {
             next[index] = avg;
         }
 
-        if (!unresolved.length && used > 0 && Math.abs(used - totalLength) > 0.5) {
-            const ratio = totalLength / used;
+        if (!unresolved.length && used > 0 && Math.abs(used - panelsLength) > 0.5) {
+            const ratio = panelsLength / used;
             for (let i = 0; i < next.length; i += 1) {
                 next[i] *= ratio;
             }
         }
 
-        panelSizes.value = distributeToFit(next, limits, totalLength);
-        containerLength.value = totalLength;
+        panelSizes.value = distributeToFit(next, limits, panelsLength);
+        containerLength.value = panelsLength;
         emit("change", [...panelSizes.value]);
     };
 

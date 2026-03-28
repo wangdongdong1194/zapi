@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import FunctionPanel from '../components/FunctionPanel.vue';
     import InterfacePanel from '../components/InterfacePanel.vue';
-import RequestPanel from '../components/RequestPanel.vue';
+    import RequestPanel from '../components/RequestPanel.vue';
     import ZSplitter from '../components/base/ZSplitter.vue';
     import ZSplitterPanel from '../components/base/ZSplitterPanel.vue';
 </script>
@@ -14,10 +14,10 @@ import RequestPanel from '../components/RequestPanel.vue';
                 <function-panel></function-panel>
             </z-splitter-panel>
             <!-- 接口树 -->
-            <z-splitter-panel size="200px" style="height: 100%;">
+            <z-splitter-panel size="200px">
                 <interface-panel></interface-panel>
             </z-splitter-panel>
-            <z-splitter-panel>
+            <z-splitter-panel min="320px">
                 <request-panel></request-panel>
             </z-splitter-panel>
         </z-splitter>

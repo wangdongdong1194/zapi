@@ -38,6 +38,7 @@ declare module 'vue' {
     IconPonent: typeof import('./src/components/IconPonent.vue')['default']
     InterfacePanel: typeof import('./src/components/InterfacePanel.vue')['default']
     RequestPanel: typeof import('./src/components/RequestPanel.vue')['default']
+    TPanel: typeof import('./src/components/TPanel.vue')['default']
     ZSplitter: typeof import('./src/components/base/ZSplitter.vue')['default']
     ZSplitterPanel: typeof import('./src/components/base/ZSplitterPanel.vue')['default']
   }
