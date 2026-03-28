@@ -1,7 +1,7 @@
 <template>
     <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTabHandler" class="request-tabs">
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-            {{ item.content }}
+            <RequestItem></RequestItem>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -9,6 +9,7 @@
 <script lang="ts" setup>
     import { ref } from 'vue'
     import type { TabPaneName } from 'element-plus'
+    import RequestItem from './RequestItem.vue'
 
     const editableTabsValue = ref('24')
     const editableTabs = ref([
