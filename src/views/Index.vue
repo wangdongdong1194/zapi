@@ -1,23 +1,25 @@
 <script setup lang="ts">
     import FunctionPanel from '../components/FunctionPanel.vue';
     import InterfacePanel from '../components/InterfacePanel.vue';
+    import ZSplitter from '../components/base/ZSplitter.vue';
+    import ZSplitterPanel from '../components/base/ZSplitterPanel.vue';
 </script>
 
 <template>
     <div class="splitter-wrapper">
-        <el-splitter>
+        <z-splitter>
             <!-- 功能栏 -->
-            <el-splitter-panel size="60px" min="60px" max="60px" style="width: 60px !important;">
+            <z-splitter-panel size="60px" min="60px" max="60px" style="width: 60px !important;">
                 <function-panel></function-panel>
-            </el-splitter-panel>
+            </z-splitter-panel>
             <!-- 接口树 -->
-            <el-splitter-panel size="200px" style="height: 100%;">
+            <z-splitter-panel size="200px" style="height: 100%;">
                 <interface-panel></interface-panel>
-            </el-splitter-panel>
-            <el-splitter-panel>
+            </z-splitter-panel>
+            <z-splitter-panel>
                 <div class="item-panel">2</div>
-            </el-splitter-panel>
-        </el-splitter>
+            </z-splitter-panel>
+        </z-splitter>
     </div>
 </template>
 
