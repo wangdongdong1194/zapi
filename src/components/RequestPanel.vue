@@ -6,7 +6,11 @@
             <el-select v-model="currentEnv" class="request-tabs__env-select" placeholder="选择环境">
                 <el-option v-for="item in envOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-button plain @click="applyEnvHandler">设置环境</el-button>
+            <el-button plain @click="applyEnvHandler">
+                <el-icon>
+                    <Operation />
+                </el-icon>
+            </el-button>
         </template>
 
         <z-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
@@ -18,6 +22,7 @@
 <script lang="ts" setup>
     import { ref } from 'vue'
     import type { TabPaneName } from 'element-plus'
+    import { Operation } from '@element-plus/icons-vue'
     import RequestItem from './RequestItem.vue'
 
     const editableTabsValue = ref('24')

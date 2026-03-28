@@ -1,5 +1,6 @@
 <script lang="ts" setup>
     import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+    import { Delete } from '@element-plus/icons-vue'
 
     type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     type PairRow = {
@@ -255,8 +256,11 @@
                             </el-table-column>
                             <el-table-column label="操作" width="90" align="center">
                                 <template #default="scope">
-                                    <el-button link type="danger"
-                                        @click="removeRow(paramsRows, scope.row.id)">删除</el-button>
+                                    <el-button link type="danger" @click="removeRow(paramsRows, scope.row.id)">
+                                        <el-icon>
+                                            <Delete />
+                                        </el-icon>
+                                    </el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -307,8 +311,11 @@
                             </el-table-column>
                             <el-table-column label="操作" width="90" align="center">
                                 <template #default="scope">
-                                    <el-button link type="danger"
-                                        @click="removeRow(headerRows, scope.row.id)">删除</el-button>
+                                    <el-button link type="danger" @click="removeRow(headerRows, scope.row.id)">
+                                        <el-icon>
+                                            <Delete />
+                                        </el-icon>
+                                    </el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -343,8 +350,11 @@
                             </el-table-column>
                             <el-table-column label="操作" width="90" align="center">
                                 <template #default="scope">
-                                    <el-button link type="danger"
-                                        @click="removeRow(cookieRows, scope.row.id)">删除</el-button>
+                                    <el-button link type="danger" @click="removeRow(cookieRows, scope.row.id)">
+                                        <el-icon>
+                                            <Delete />
+                                        </el-icon>
+                                    </el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
