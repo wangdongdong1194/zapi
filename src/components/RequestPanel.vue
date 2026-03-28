@@ -1,9 +1,18 @@
 <template>
-    <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTabHandler" class="request-tabs">
-        <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+    <z-tabs v-model="editableTabsValue" type="card" editable @tab-remove="removeTabHandler" @tab-add="addTabHandler"
+        class="request-tabs">
+        <template #extra>
+            <el-button link type="primary" @click="addTabHandler"></el-button>
+            <el-select v-model="currentEnv" class="request-tabs__env-select" placeholder="选择环境">
+                <el-option v-for="item in envOptions" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+            <el-button plain @click="applyEnvHandler">设置环境</el-button>
+        </template>
+
+        <z-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <RequestItem></RequestItem>
-        </el-tab-pane>
-    </el-tabs>
+        </z-tab-pane>
+    </z-tabs>
 </template>
 
 <script lang="ts" setup>
@@ -12,6 +21,13 @@
     import RequestItem from './RequestItem.vue'
 
     const editableTabsValue = ref('24')
+    const currentEnv = ref('dev')
+    const envOptions = [
+        { label: '开发环境', value: 'dev' },
+        { label: '测试环境', value: 'test' },
+        { label: '预发环境', value: 'staging' },
+        { label: '正式环境', value: 'prod' },
+    ]
     const editableTabs = ref([
         {
             title: 'Tab 1dfghjkjhg',
@@ -58,6 +74,26 @@
         editableTabsValue.value = activeName
         editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
     }
+
+    const addTabHandler = (): void => {
+        const newName = `tab-${Date.now()}`
+        const newTab = {
+            title: `新建请求 ${editableTabs.value.length + 1}`,
+            name: newName,
+            content: '',
+        }
+        const currentIndex = editableTabs.value.findIndex((tab) => tab.name === editableTabsValue.value)
+        if (currentIndex === -1) {
+            editableTabs.value.push(newTab)
+        } else {
+            editableTabs.value.splice(currentIndex + 1, 0, newTab)
+        }
+        editableTabsValue.value = newName
+    }
+
+    const applyEnvHandler = (): void => {
+        console.log('current env:', currentEnv.value)
+    }
 </script>
 
 <style>
@@ -81,5 +117,10 @@
         color: #6b778c;
         font-size: 32px;
         font-weight: 600;
+    }
+
+    .request-tabs__env-select {
+        min-width: 168px;
+        width: 168px;
     }
 </style>

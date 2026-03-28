@@ -48,5 +48,7 @@ declare module 'vue' {
     TPanel: typeof import('./src/components/TPanel.vue')['default']
     ZSplitter: typeof import('./src/components/base/ZSplitter.vue')['default']
     ZSplitterPanel: typeof import('./src/components/base/ZSplitterPanel.vue')['default']
+    ZTabPane: typeof import('./src/components/base/ZTabPane.vue')['default']
+    ZTabs: typeof import('./src/components/base/ZTabs.vue')['default']
   }
 }
