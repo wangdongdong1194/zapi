@@ -94,6 +94,17 @@
     };
 
     const panelNodes = computed(() => flattenPanels(slots.default?.() ?? []));
+    const panelPropSignature = computed(() => {
+        return panelNodes.value
+            .map((node) => {
+                const panelProps = (node?.props ?? {}) as Record<string, unknown>;
+                const size = panelProps.size ?? panelProps["data-size"];
+                const min = panelProps.min ?? panelProps["data-min"];
+                const max = panelProps.max ?? panelProps["data-max"];
+                return `${String(size ?? "")}|${String(min ?? "")}|${String(max ?? "")}`;
+            })
+            .join("::");
+    });
 
     const getContainerLength = (): number => {
         const container = containerRef.value;
@@ -424,6 +435,20 @@
 
     watch(
         () => props.layout,
+        () => {
+            nextTick(() => initializeSizes(true));
+        },
+    );
+
+    watch(
+        () => props.gutterSize,
+        () => {
+            nextTick(() => initializeSizes(true));
+        },
+    );
+
+    watch(
+        () => panelPropSignature.value,
         () => {
             nextTick(() => initializeSizes(true));
         },
