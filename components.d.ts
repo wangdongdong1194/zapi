@@ -47,6 +47,8 @@ declare module 'vue' {
     RequestItem: typeof import('./src/components/RequestItem.vue')['default']
     RequestPanel: typeof import('./src/components/RequestPanel.vue')['default']
     TPanel: typeof import('./src/components/TPanel.vue')['default']
+    ZKeyValueTable: typeof import('./src/components/base/ZKeyValueTable.vue')['default']
+    ZParamTable: typeof import('./src/components/base/ZParamTable.vue')['default']
     ZSplitter: typeof import('./src/components/base/ZSplitter.vue')['default']
     ZSplitterPanel: typeof import('./src/components/base/ZSplitterPanel.vue')['default']
     ZTabPane: typeof import('./src/components/base/ZTabPane.vue')['default']

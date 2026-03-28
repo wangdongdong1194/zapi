@@ -1,13 +1,13 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-    import { Delete } from '@element-plus/icons-vue'
-    import ZVariableInput from './base/ZVariableInput.vue'
+    import ZParamTable from './base/ZParamTable.vue'
 
     type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     type PairRow = {
         id: number
         key: string
         value: string
+        valueType: 'string' | 'number' | 'boolean' | 'file' | 'array' | 'object' | 'null'
         description: string
         enabled: boolean
     }
@@ -37,9 +37,20 @@
         id: rowId++,
         key,
         value,
+        valueType: 'string',
         description,
         enabled: true,
     })
+
+    const valueTypeOptions = [
+        { label: 'string', value: 'string' },
+        { label: 'number', value: 'number' },
+        { label: 'boolean', value: 'boolean' },
+        { label: 'file', value: 'file' },
+        { label: 'array', value: 'array' },
+        { label: 'object', value: 'object' },
+        { label: 'null', value: 'null' },
+    ]
 
     const paramsRows = ref<PairRow[]>([
         createRow('page', '1', '页码'),
@@ -50,6 +61,11 @@
     const headerRows = ref<PairRow[]>([
         createRow('Content-Type', 'application/json', '请求格式'),
         createRow('Authorization', 'Bearer token', '鉴权信息'),
+        createRow(),
+    ])
+
+    const bodyFormDataRows = ref<PairRow[]>([
+        createRow('file', '', '文件或字段内容'),
         createRow(),
     ])
 
@@ -71,32 +87,11 @@
         }
     }
 
-    const removeRow = (target: PairRow[], id: number): void => {
-        const index = target.findIndex((item) => item.id === id)
-        if (index >= 0) {
-            target.splice(index, 1)
-        }
-    }
-
-    const isAllChecked = (list: PairRow[]): boolean => {
-        return list.length > 0 && list.every((item) => item.enabled)
-    }
-
-    const isIndeterminate = (list: PairRow[]): boolean => {
-        const checkedCount = list.filter((item) => item.enabled).length
-        return checkedCount > 0 && checkedCount < list.length
-    }
-
-    const toggleAll = (list: PairRow[], checked: boolean): void => {
-        list.forEach((item) => {
-            item.enabled = checked
-        })
-    }
-
     const sendRequest = (): void => {
         console.log('send request payload', {
             ...requestForm,
             bodyMode: bodyMode.value,
+            bodyFormData: bodyFormDataRows.value,
             params: paramsRows.value,
             headers: headerRows.value,
             cookies: cookieRows.value,
@@ -180,6 +175,14 @@
     )
 
     watch(
+        bodyFormDataRows,
+        () => {
+            ensureTrailingBlankRow(bodyFormDataRows.value)
+        },
+        { deep: true },
+    )
+
+    watch(
         cookieRows,
         () => {
             ensureTrailingBlankRow(cookieRows.value)
@@ -236,42 +239,10 @@
             <z-splitter-panel>
                 <el-tabs v-model="activeTab" class="request-item__tabs">
                     <el-tab-pane label="Params" name="params">
-                        <el-table :data="paramsRows" border height="280">
-                            <el-table-column width="60" align="center">
-                                <template #header>
-                                    <el-checkbox :model-value="isAllChecked(paramsRows)"
-                                        :indeterminate="isIndeterminate(paramsRows)"
-                                        @change="toggleAll(paramsRows, $event)"></el-checkbox>
-                                </template>
-                                <template #default="scope">
-                                    <el-checkbox v-model="scope.row.enabled" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Key" min-width="180">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.key" placeholder="参数名" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Value" min-width="220">
-                                <template #default="scope">
-                                    <z-variable-input v-model="scope.row.value" placeholder="参数值" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Description" min-width="220">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.description" placeholder="描述" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="60" align="center">
-                                <template #default="scope">
-                                    <el-button link type="danger" @click="removeRow(paramsRows, scope.row.id)">
-                                        <el-icon>
-                                            <Delete />
-                                        </el-icon>
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                        <z-param-table v-model="paramsRows" key-placeholder="参数名" value-placeholder="参数值"
+                            description-placeholder="描述" 
+                            :show-value-type="true"
+                            :value-type-options="valueTypeOptions" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Body" name="body">
@@ -286,86 +257,26 @@
                             </div>
                         </div>
 
-                        <el-input v-model="requestForm.bodyText" type="textarea" :rows="12" resize="none"
+                        <z-param-table v-if="bodyMode === 'form-data'" v-model="bodyFormDataRows"
+                            key-placeholder="字段名" value-placeholder="字段值" description-placeholder="描述"
+                            :show-value-type="true" :value-type-options="valueTypeOptions" />
+
+                        <el-input v-else v-model="requestForm.bodyText" type="textarea" :rows="12" resize="none"
                             placeholder="请输入 Body 内容" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Headers" name="headers">
-                        <el-table :data="headerRows" border height="280">
-                            <el-table-column width="60" align="center">
-                                <template #header>
-                                    <el-checkbox :model-value="isAllChecked(headerRows)"
-                                        :indeterminate="isIndeterminate(headerRows)"
-                                        @change="toggleAll(headerRows, $event)"></el-checkbox>
-                                </template>
-                                <template #default="scope">
-                                    <el-checkbox v-model="scope.row.enabled" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Key" min-width="180">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.key" placeholder="Header 名称" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Value" min-width="220">
-                                <template #default="scope">
-                                    <z-variable-input v-model="scope.row.value" placeholder="Header 值" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Description" min-width="220">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.description" placeholder="描述" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="60" align="center">
-                                <template #default="scope">
-                                    <el-button link type="danger" @click="removeRow(headerRows, scope.row.id)">
-                                        <el-icon>
-                                            <Delete />
-                                        </el-icon>
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                        <z-param-table v-model="headerRows" key-placeholder="Header 名称"
+                            value-placeholder="Header 值" description-placeholder="描述" 
+                            :show-value-type="true"
+                            :value-type-options="valueTypeOptions" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Cookies" name="cookies">
-                        <el-table :data="cookieRows" border height="280">
-                            <el-table-column width="60" align="center">
-                                <template #header>
-                                    <el-checkbox :model-value="isAllChecked(cookieRows)"
-                                        :indeterminate="isIndeterminate(cookieRows)"
-                                        @change="toggleAll(cookieRows, $event)"></el-checkbox>
-                                </template>
-                                <template #default="scope">
-                                    <el-checkbox v-model="scope.row.enabled" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Key" min-width="180">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.key" placeholder="Cookie 名称" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Value" min-width="220">
-                                <template #default="scope">
-                                    <z-variable-input v-model="scope.row.value" placeholder="Cookie 值" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Description" min-width="220">
-                                <template #default="scope">
-                                    <el-input v-model="scope.row.description" placeholder="描述" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="60" align="center">
-                                <template #default="scope">
-                                    <el-button link type="danger" @click="removeRow(cookieRows, scope.row.id)">
-                                        <el-icon>
-                                            <Delete />
-                                        </el-icon>
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                        <z-param-table v-model="cookieRows" key-placeholder="Cookie 名称"
+                            value-placeholder="Cookie 值" description-placeholder="描述" 
+                            :show-value-type="true"
+                            :value-type-options="valueTypeOptions" />
                     </el-tab-pane>
                 </el-tabs>
             </z-splitter-panel>
