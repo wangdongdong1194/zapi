@@ -36,6 +36,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
+    ElTag: typeof import('element-plus/es')['ElTag']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     FunctionPanel: typeof import('./src/components/FunctionPanel.vue')['default']
@@ -50,5 +51,6 @@ declare module 'vue' {
     ZSplitterPanel: typeof import('./src/components/base/ZSplitterPanel.vue')['default']
     ZTabPane: typeof import('./src/components/base/ZTabPane.vue')['default']
     ZTabs: typeof import('./src/components/base/ZTabs.vue')['default']
+    ZVariableInput: typeof import('./src/components/base/ZVariableInput.vue')['default']
   }
 }

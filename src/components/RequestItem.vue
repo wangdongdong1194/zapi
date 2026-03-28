@@ -1,6 +1,7 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
     import { Delete } from '@element-plus/icons-vue'
+    import ZVariableInput from './base/ZVariableInput.vue'
 
     type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     type PairRow = {
@@ -253,7 +254,7 @@
                             </el-table-column>
                             <el-table-column label="Value" min-width="220">
                                 <template #default="scope">
-                                    <el-input v-model="scope.row.value" placeholder="参数值" />
+                                    <z-variable-input v-model="scope.row.value" placeholder="参数值" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="Description" min-width="220">
@@ -308,7 +309,7 @@
                             </el-table-column>
                             <el-table-column label="Value" min-width="220">
                                 <template #default="scope">
-                                    <el-input v-model="scope.row.value" placeholder="Header 值" />
+                                    <z-variable-input v-model="scope.row.value" placeholder="Header 值" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="Description" min-width="220">
@@ -347,7 +348,7 @@
                             </el-table-column>
                             <el-table-column label="Value" min-width="220">
                                 <template #default="scope">
-                                    <el-input v-model="scope.row.value" placeholder="Cookie 值" />
+                                    <z-variable-input v-model="scope.row.value" placeholder="Cookie 值" />
                                 </template>
                             </el-table-column>
                             <el-table-column label="Description" min-width="220">
