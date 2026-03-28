@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-    import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+    import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
     import { Delete } from '@element-plus/icons-vue'
 
     type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -27,7 +27,7 @@
     const requestForm = reactive({
         name: '获取用户列表',
         method: 'GET' as RequestMethod,
-        url: 'https://api.example.com/users',
+        url: '/api/examplecom/users',
         bodyText: '{\n  "page": 1,\n  "size": 20\n}',
     })
 
@@ -56,6 +56,9 @@
         createRow('sessionId', 'demo-session-id', '会话标识'),
         createRow(),
     ])
+
+    const precedingURL = ref('http://www.baidu.com')
+    const hasPrecedingURL = computed(() => precedingURL.value.trim().length > 0)
 
     const isEmptyRow = (row: PairRow): boolean => {
         return !row.key.trim() && !row.value.trim() && !row.description.trim()
@@ -216,7 +219,11 @@
                         </div>
 
                         <div class="request-item__field request-item__field--url">
-                            <el-input v-model="requestForm.url" placeholder="请输入接口地址" />
+                            <el-input v-model="requestForm.url" placeholder="请输入接口地址">
+                                <template v-if="hasPrecedingURL" #prepend>
+                                    {{ precedingURL }}
+                                </template>
+                            </el-input>
                         </div>
 
                         <el-button type="primary" class="request-item__send" @click="sendRequest">
@@ -254,7 +261,7 @@
                                     <el-input v-model="scope.row.description" placeholder="描述" />
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" width="90" align="center">
+                            <el-table-column label="操作" width="60" align="center">
                                 <template #default="scope">
                                     <el-button link type="danger" @click="removeRow(paramsRows, scope.row.id)">
                                         <el-icon>
@@ -309,7 +316,7 @@
                                     <el-input v-model="scope.row.description" placeholder="描述" />
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" width="90" align="center">
+                            <el-table-column label="操作" width="60" align="center">
                                 <template #default="scope">
                                     <el-button link type="danger" @click="removeRow(headerRows, scope.row.id)">
                                         <el-icon>
@@ -348,7 +355,7 @@
                                     <el-input v-model="scope.row.description" placeholder="描述" />
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" width="90" align="center">
+                            <el-table-column label="操作" width="60" align="center">
                                 <template #default="scope">
                                     <el-button link type="danger" @click="removeRow(cookieRows, scope.row.id)">
                                         <el-icon>
