@@ -42,16 +42,6 @@
         enabled: true,
     })
 
-    const valueTypeOptions = [
-        { label: 'string', value: 'string' },
-        { label: 'number', value: 'number' },
-        { label: 'boolean', value: 'boolean' },
-        { label: 'file', value: 'file' },
-        { label: 'array', value: 'array' },
-        { label: 'object', value: 'object' },
-        { label: 'null', value: 'null' },
-    ]
-
     const paramsRows = ref<PairRow[]>([
         createRow('page', '1', '页码'),
         createRow('size', '20', '每页数量'),
@@ -240,9 +230,7 @@
                 <el-tabs v-model="activeTab" class="request-item__tabs">
                     <el-tab-pane label="Params" name="params">
                         <z-param-table v-model="paramsRows" key-placeholder="参数名" value-placeholder="参数值"
-                            description-placeholder="描述" 
-                            :show-value-type="true"
-                            :value-type-options="valueTypeOptions" />
+                            description-placeholder="描述" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Body" name="body">
@@ -257,26 +245,21 @@
                             </div>
                         </div>
 
-                        <z-param-table v-if="bodyMode === 'form-data'" v-model="bodyFormDataRows"
-                            key-placeholder="字段名" value-placeholder="字段值" description-placeholder="描述"
-                            :show-value-type="true" :value-type-options="valueTypeOptions" />
+                        <z-param-table v-if="bodyMode === 'form-data'" v-model="bodyFormDataRows" key-placeholder="字段名"
+                            value-placeholder="字段值" description-placeholder="描述" />
 
                         <el-input v-else v-model="requestForm.bodyText" type="textarea" :rows="12" resize="none"
                             placeholder="请输入 Body 内容" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Headers" name="headers">
-                        <z-param-table v-model="headerRows" key-placeholder="Header 名称"
-                            value-placeholder="Header 值" description-placeholder="描述" 
-                            :show-value-type="true"
-                            :value-type-options="valueTypeOptions" />
+                        <z-param-table v-model="headerRows" key-placeholder="Header 名称" value-placeholder="Header 值"
+                            description-placeholder="描述" :hidden-value-types="['file','object']"/>
                     </el-tab-pane>
 
                     <el-tab-pane label="Cookies" name="cookies">
-                        <z-param-table v-model="cookieRows" key-placeholder="Cookie 名称"
-                            value-placeholder="Cookie 值" description-placeholder="描述" 
-                            :show-value-type="true"
-                            :value-type-options="valueTypeOptions" />
+                        <z-param-table v-model="cookieRows" key-placeholder="Cookie 名称" value-placeholder="Cookie 值"
+                            description-placeholder="描述" />
                     </el-tab-pane>
                 </el-tabs>
             </z-splitter-panel>

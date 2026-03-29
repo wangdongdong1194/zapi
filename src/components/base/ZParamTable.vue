@@ -22,19 +22,32 @@
         keyPlaceholder?: string
         valuePlaceholder?: string
         descriptionPlaceholder?: string
-        showValueType?: boolean
-        valueTypeOptions?: ValueTypeOption[]
+        hiddenValueTypes?: string[]
         tableHeight?: number | string
     }>(), {
         keyPlaceholder: 'Key',
         valuePlaceholder: 'Value',
         descriptionPlaceholder: 'Description',
-        showValueType: false,
-        valueTypeOptions: () => [
-            { label: 'string', value: 'string' },
-            { label: 'number', value: 'number' },
-        ],
+        hiddenValueTypes: () => [],
         tableHeight: 280,
+    })
+
+    const defaultValueTypeOptions: ValueTypeOption[] = [
+        { label: 'string', value: 'string' },
+        { label: 'number', value: 'number' },
+        { label: 'boolean', value: 'boolean' },
+        { label: 'file', value: 'file' },
+        { label: 'array', value: 'array' },
+        { label: 'object', value: 'object' },
+    ]
+
+    const visibleValueTypeOptions = computed(() => {
+        if (!props.hiddenValueTypes.length) {
+            return defaultValueTypeOptions
+        }
+
+        const hiddenSet = new Set(props.hiddenValueTypes)
+        return defaultValueTypeOptions.filter((item) => !hiddenSet.has(item.value))
     })
 
     const emit = defineEmits<{
@@ -82,14 +95,13 @@
 
         <el-table-column label="Value" min-width="320">
             <template #default="scope">
-                <div v-if="showValueType" class="z-param-table__value-with-type">
+                <div class="z-param-table__value-with-type">
                     <z-variable-input v-model="scope.row.value" :placeholder="valuePlaceholder" />
                     <el-select v-model="scope.row.valueType" class="z-param-table__value-type" placeholder="类型">
-                        <el-option v-for="item in valueTypeOptions" :key="item.value" :label="item.label"
+                        <el-option v-for="item in visibleValueTypeOptions" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
                 </div>
-                <z-variable-input v-else v-model="scope.row.value" :placeholder="valuePlaceholder" />
             </template>
         </el-table-column>
 
