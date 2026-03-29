@@ -230,7 +230,7 @@
                 <el-tabs v-model="activeTab" class="request-item__tabs">
                     <el-tab-pane label="Params" name="params">
                         <z-param-table v-model="paramsRows" key-placeholder="参数名" value-placeholder="参数值"
-                            description-placeholder="描述" />
+                            description-placeholder="描述" table-height="100%" class="request-item__param-table" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Body" name="body">
@@ -246,7 +246,8 @@
                         </div>
 
                         <z-param-table v-if="bodyMode === 'form-data'" v-model="bodyFormDataRows" key-placeholder="字段名"
-                            value-placeholder="字段值" description-placeholder="描述" />
+                            value-placeholder="字段值" description-placeholder="描述" table-height="100%"
+                            class="request-item__param-table" />
 
                         <el-input v-else v-model="requestForm.bodyText" type="textarea" :rows="12" resize="none"
                             placeholder="请输入 Body 内容" />
@@ -254,12 +255,13 @@
 
                     <el-tab-pane label="Headers" name="headers">
                         <z-param-table v-model="headerRows" key-placeholder="Header 名称" value-placeholder="Header 值"
-                            description-placeholder="描述" :hidden-value-types="['file','object']"/>
+                            description-placeholder="描述" :hidden-value-types="['file', 'object']" table-height="100%"
+                            class="request-item__param-table" />
                     </el-tab-pane>
 
                     <el-tab-pane label="Cookies" name="cookies">
                         <z-param-table v-model="cookieRows" key-placeholder="Cookie 名称" value-placeholder="Cookie 值"
-                            description-placeholder="描述" />
+                            description-placeholder="描述" table-height="100%" class="request-item__param-table" />
                     </el-tab-pane>
                 </el-tabs>
             </z-splitter-panel>
@@ -334,6 +336,14 @@
 
     .request-item__tabs :deep(.el-tab-pane) {
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .request-item__param-table {
+        flex: 1;
+        min-height: 0;
     }
 
     .request-item__tab-header {

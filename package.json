@@ -15,11 +15,13 @@
   },
   "dependencies": {
     "element-plus": "^2.13.6",
+    "sortablejs": "^1.15.7",
     "unplugin-auto-import": "^21.0.0",
     "unplugin-vue-components": "^32.0.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
+    "@types/sortablejs": "^1.15.9",
     "@vitejs/plugin-vue": "^5.0.4",
     "electron": "^30.0.1",
     "electron-builder": "^24.13.3",
