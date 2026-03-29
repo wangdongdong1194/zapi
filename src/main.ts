@@ -4,11 +4,12 @@ import App from './App.vue'
 import 'element-plus/dist/index.css'
 
 createApp(App).mount('#app').$nextTick(() => {
-  if (!window.ipcRenderer) {
-    return
+  if (
+    window.ipcRenderer &&
+    typeof window.ipcRenderer.on === 'function'
+  ) {
+    window.ipcRenderer.on('main-process-message', (_event, message) => {
+      console.log(message)
+    })
   }
-
-  window.ipcRenderer.on('main-process-message', (_event, message) => {
-    console.log(message)
-  })
 })

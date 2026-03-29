@@ -55,9 +55,19 @@ ipcMain.on('request:send', async (event, payload: RequestPayload) => {
         } catch (err: any) {
             // 返回错误信息
             event.reply('request:send:error', err?.message || String(err))
+            console.error('[logic] Request failed', {
+                error: err,
+                message: err?.message || String(err),
+            })
             return
         }
         // 返回响应数据
+        console.log('[logic] Request successful, sending response back', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            data: response.data,
+        });
         event.reply('request:send:success', {
             ok: true,
             status: response.status,
