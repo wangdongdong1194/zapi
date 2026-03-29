@@ -1,6 +1,7 @@
 <script lang="ts" setup>
     import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
     import ZParamTable from './base/ZParamTable.vue'
+    import { ElMessage } from 'element-plus'
 
     type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     type PairRow = {
@@ -77,15 +78,53 @@
         }
     }
 
+    let errorListener: ((event: any, message: string) => void) | null = null
+    let successListener: ((event: any, message: any) => void) | null = null
+
     const sendRequest = (): void => {
-        console.log('send request payload', {
-            ...requestForm,
-            bodyMode: bodyMode.value,
-            bodyFormData: bodyFormDataRows.value,
-            params: paramsRows.value,
-            headers: headerRows.value,
-            cookies: cookieRows.value,
-        })
+        // 结构化克隆，避免包含 Proxy、循环引用等不可克隆对象
+        let payload: any
+        try {
+            payload = JSON.parse(JSON.stringify({
+                ...requestForm,
+                bodyMode: bodyMode.value,
+                bodyFormData: bodyFormDataRows.value,
+                params: paramsRows.value,
+                headers: headerRows.value,
+                cookies: cookieRows.value,
+            }))
+        } catch (err) {
+            ElMessage.error('请求数据序列化失败，无法发送到 Electron')
+            return
+        }
+        try {
+            if (window.electron && typeof window.electron.send === 'function') {
+                window.electron.send('request:send', payload)
+                // 监听成功事件
+                if (!successListener) {
+                    successListener = (_event, message) => {
+                        ElMessage.success('Electron 处理成功1: ' + (message?.ok ? 'OK' : JSON.stringify(message)))
+                    }
+                    if (window.electron.on) window.electron.on('request:send:success', successListener)
+                    else if (window.electron.addListener) window.electron.addListener('request:send:success', successListener)
+                }
+            } else if (window.ipcRenderer && typeof window.ipcRenderer.send === 'function') {
+                window.ipcRenderer.send('request:send', payload)
+                if (!successListener) {
+                    successListener = (_event, message) => {
+                        ElMessage.success('Electron 处理成功2: ' + (message?.ok ? 'OK' : JSON.stringify(message)))
+                    }
+                    if (window.ipcRenderer.on) window.ipcRenderer.on('request:send:success', successListener)
+                    else if (window.ipcRenderer.addListener) window.ipcRenderer.addListener('request:send:success', successListener)
+                }
+            } else {
+                ElMessage.error('未检测到 Electron 通信接口，无法发送请求')
+                return
+            }
+            ElMessage.success('请求已发送到 Electron')
+        } catch (err: any) {
+            ElMessage.error('发送请求到 Electron 失败: ' + (err?.message || err))
+        }
     }
 
     const syncFirstPanelHeight = (): void => {
@@ -146,6 +185,23 @@
         firstPanelChildrenResizeObserver = null
         firstPanelMutationObserver?.disconnect()
         firstPanelMutationObserver = null
+        if (errorListener && window.ipcRenderer && typeof window.ipcRenderer.off === 'function') {
+            window.ipcRenderer.off('request:send:error', errorListener)
+        }
+        if (errorListener && window.electron) {
+            const electron = window.electron
+            if (electron.off) electron.off('request:send:error', errorListener)
+            else if (electron.removeListener) electron.removeListener('request:send:error', errorListener)
+        }
+        if (successListener && window.ipcRenderer && typeof window.ipcRenderer.off === 'function') {
+            window.ipcRenderer.off('request:send:success', successListener)
+        }
+        if (successListener && window.electron) {
+            const electron = window.electron
+            if (electron.off) electron.off('request:send:success', successListener)
+            else if (electron.removeListener) electron.removeListener('request:send:success', successListener)
+        }
+        successListener = null
     })
 
     watch(

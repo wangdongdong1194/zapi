@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+import './src/requestLogic'
 // import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -65,4 +66,8 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+
+app.whenReady().then(() => {
+  createWindow()
+})
+
